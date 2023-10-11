@@ -1,16 +1,16 @@
 # CUDA
-cuda_devices: '0,1'   # multi-gpu training is available
+cuda_devices: '0'   # multi-gpu training is available
 
 # dataset
 dataset:
-  data_root: 'dataset/ModelNet40_processed'
+  data_root: 'dataset/house_processed'
   max_faces: 500
   augment_data: true
   jitter_sigma: 0.01
   jitter_clip: 0.05
 
 # result
-ckpt_root: 'ckpt_root'
+ckpt_root: 'ckpt_root_2'
 
 # MeshNet
 MeshNet:

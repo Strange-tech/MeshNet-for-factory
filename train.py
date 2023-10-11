@@ -137,6 +137,8 @@ if __name__ == '__main__':
     else:
         scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=cfg['max_epoch'])
 
+    # print(data_set["train"].data[0])
+
     # start training
     if not os.path.exists(cfg['ckpt_root']):
         os.mkdir(cfg['ckpt_root'])

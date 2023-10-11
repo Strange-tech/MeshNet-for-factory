@@ -5,15 +5,21 @@ import torch.utils.data as data
 import pymeshlab
 from data.preprocess import find_neighbor
 
+# type_to_index_map = {
+#     'night_stand': 0, 'range_hood': 1, 'plant': 2, 'chair': 3, 'tent': 4,
+#     'curtain': 5, 'piano': 6, 'dresser': 7, 'desk': 8, 'bed': 9,
+#     'sink': 10,  'laptop':11, 'flower_pot': 12, 'car': 13, 'stool': 14,
+#     'vase': 15, 'monitor': 16, 'airplane': 17, 'stairs': 18, 'glass_box': 19,
+#     'bottle': 20, 'guitar': 21, 'cone': 22,  'toilet': 23, 'bathtub': 24,
+#     'wardrobe': 25, 'radio': 26,  'person': 27, 'xbox': 28, 'bowl': 29,
+#     'cup': 30, 'door': 31,  'tv_stand': 32,  'mantel': 33, 'sofa': 34,
+#     'keyboard': 35, 'bookshelf': 36,  'bench': 37, 'table': 38, 'lamp': 39
+# }
 type_to_index_map = {
-    'night_stand': 0, 'range_hood': 1, 'plant': 2, 'chair': 3, 'tent': 4,
-    'curtain': 5, 'piano': 6, 'dresser': 7, 'desk': 8, 'bed': 9,
-    'sink': 10,  'laptop':11, 'flower_pot': 12, 'car': 13, 'stool': 14,
-    'vase': 15, 'monitor': 16, 'airplane': 17, 'stairs': 18, 'glass_box': 19,
-    'bottle': 20, 'guitar': 21, 'cone': 22,  'toilet': 23, 'bathtub': 24,
-    'wardrobe': 25, 'radio': 26,  'person': 27, 'xbox': 28, 'bowl': 29,
-    'cup': 30, 'door': 31,  'tv_stand': 32,  'mantel': 33, 'sofa': 34,
-    'keyboard': 35, 'bookshelf': 36,  'bench': 37, 'table': 38, 'lamp': 39
+    '不规则形状柱体': 0, '长方体': 1, '窗体': 2, '胶囊柱体': 4,
+    '金字塔': 5, '空心长方体': 6, '胖长方体': 7, '平面': 8, '平面圆': 9,
+    '铅笔管': 10, '扇体': 11, '弯管': 12, '楔': 13,
+    '圆角柱体': 15, '圆柱': 16, '折叠': 17, '桌子': 18
 }
 
 
@@ -52,7 +58,8 @@ class ModelNet40(data.Dataset):
         # data augmentation
         if self.augment_data and self.part == 'train':
             # jitter
-            jittered_data = np.clip(self.jitter_sigma * np.random.randn(*face[:, :3].shape), -1 * self.jitter_clip, self.jitter_clip)
+            jittered_data = np.clip(self.jitter_sigma * np.random.randn(*face[:, :3].shape), -1 * self.jitter_clip,
+                                    self.jitter_clip)
             face = np.concatenate((face[:, :3] + jittered_data, face[:, 3:]), 1)
 
         # fill for n < max_faces with randomly picked faces
@@ -90,7 +97,7 @@ def process_mesh(path, max_faces):
     # load mesh
     ms.load_new_mesh(path)
     mesh = ms.current_mesh()
-    
+
     # # clean up
     # mesh, _ = pymesh.remove_isolated_vertices(mesh)
     # mesh, _ = pymesh.remove_duplicated_vertices(mesh)
@@ -99,7 +106,7 @@ def process_mesh(path, max_faces):
     vertices = mesh.vertex_matrix()
     faces = mesh.face_matrix()
 
-    if faces.shape[0] != max_faces:     # only occur once in train set of Manifold40
+    if faces.shape[0] != max_faces:  # only occur once in train set of Manifold40
         print("Model with more than {} faces ({}): {}".format(max_faces, faces.shape[0], path))
         return None, None
 
@@ -108,7 +115,7 @@ def process_mesh(path, max_faces):
     vertices -= center
 
     # normalize
-    max_len = np.max(vertices[:, 0]**2 + vertices[:, 1]**2 + vertices[:, 2]**2)
+    max_len = np.max(vertices[:, 0] ** 2 + vertices[:, 1] ** 2 + vertices[:, 2] ** 2)
     vertices /= np.sqrt(max_len)
 
     # get normal vector

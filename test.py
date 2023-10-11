@@ -44,6 +44,8 @@ def test_model(model):
     if cfg['retrieval_on']:
         print('mAP: {:.4f}'.format(calculate_map(ft_all, lbl_all)))
 
+def
+
 
 if __name__ == '__main__':
 

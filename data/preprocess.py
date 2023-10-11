@@ -14,13 +14,13 @@ def find_neighbor(faces, faces_contain_this_vertex, vf1, vf2, except_face):
 
     return except_face
 
+
 if __name__ == '__main__':
-    root = Path('dataset/Manifold40')
-    new_root = Path('dataset/ModelNet40_processed')
+    root = Path('/home/luziang/桌面/MeshNet/dataset/house')
+    new_root = Path('/home/luziang/桌面/MeshNet/dataset/house_processed')
     max_faces = 500
     shape_list = sorted(list(root.glob('*/*/*.obj')))
     ms = pymeshlab.MeshSet()
-
     for shape_dir in track(shape_list):
         out_dir = new_root / shape_dir.relative_to(root).with_suffix('.npz')
         # if out_dir.exists():
@@ -31,7 +31,7 @@ if __name__ == '__main__':
         # load mesh
         ms.load_new_mesh(str(shape_dir))
         mesh = ms.current_mesh()
-        
+
         # # clean up
         # mesh, _ = pymesh.remove_isolated_vertices(mesh)
         # mesh, _ = pymesh.remove_duplicated_vertices(mesh)
@@ -40,7 +40,7 @@ if __name__ == '__main__':
         vertices = mesh.vertex_matrix()
         faces = mesh.face_matrix()
 
-        if faces.shape[0] != max_faces:
+        if faces.shape[0] > max_faces:
             print("Model with more than {} faces ({}): {}".format(max_faces, faces.shape[0], out_dir))
             continue
 
@@ -49,7 +49,7 @@ if __name__ == '__main__':
         vertices -= center
 
         # normalize
-        max_len = np.max(vertices[:, 0]**2 + vertices[:, 1]**2 + vertices[:, 2]**2)
+        max_len = np.max(vertices[:, 0] ** 2 + vertices[:, 1] ** 2 + vertices[:, 2] ** 2)
         vertices /= np.sqrt(max_len)
 
         # get normal vector

@@ -1,3 +1,4 @@
+# MeshNet is proposed by Yutong Feng et al.
 ## MeshNet: Mesh Neural Network for 3D Shape Representation
 Created by Yutong Feng, Yifan Feng, Haoxuan You, Xibin Zhao, Yue Gao from Tsinghua University.
 

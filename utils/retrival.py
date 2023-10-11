@@ -24,23 +24,25 @@ def acc_score(y_true, y_pred, average="micro"):
         y_true = np.array(y_true)
     if isinstance(y_pred, list):
         y_pred = np.array(y_pred)
-    if average == "micro": 
+    if average == "micro":
         # overall
         return np.mean(y_true == y_pred)
     elif average == "macro":
         # average of each class
         cls_acc = []
         for cls_idx in np.unique(y_true):
-            cls_acc.append(np.mean(y_pred[y_true==cls_idx]==cls_idx))
+            cls_acc.append(np.mean(y_pred[y_true == cls_idx] == cls_idx))
         return np.mean(np.array(cls_acc))
     else:
         raise NotImplementedError
+
 
 def cdist(fts_a, fts_b, metric):
     if metric == 'inner':
         return np.matmul(fts_a, fts_b.T)
     else:
         return scipy.spatial.distance.cdist(fts_a, fts_b, metric)
+
 
 def map_score(fts_a, fts_b, lbl_a, lbl_b, metric='cosine'):
     dist = cdist(fts_a, fts_b, metric)
@@ -51,18 +53,21 @@ def map_score(fts_a, fts_b, lbl_a, lbl_b, metric='cosine'):
 def map_from_dist(dist, lbl_a, lbl_b):
     n_a, n_b = dist.shape
     s_idx = dist.argsort()
+    dist.sort()
 
     res = []
     for i in range(n_a):
         order = s_idx[i]
+        d = dist[i]
         p = 0.0
         r = 0.0
         for j in range(n_b):
+            # print(lbl_a[i], order[j], d[j], lbl_b[order[j]])
             if lbl_a[i] == lbl_b[order[j]]:
                 r += 1
                 p += (r / (j + 1))
         if r > 0:
-            res.append(p/r)
+            res.append(p / r)
         else:
             res.append(0)
     return np.mean(res)
